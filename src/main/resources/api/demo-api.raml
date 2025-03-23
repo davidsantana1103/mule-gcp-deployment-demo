@@ -1,0 +1,16 @@
+#%RAML 1.0
+title: Demo API
+version: v1
+baseUri: https://api.example.com/v1
+
+/status:
+  get:
+    description: Get the API status
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "status": "ok"
+              }
