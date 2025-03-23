@@ -124,7 +124,7 @@ output application/json
         </error-handler>
     </flow>
     <flow name="get:\status:demo-api-config">
-        <logger level="INFO" doc:name="Logger" doc:id="582f5116-09f1-4693-9846-f88375a31961" message="Getting status"/>
+        <logger level="INFO" doc:name="Logger" doc:id="582f5116-09f1-4693-9846-f88375a31961" message="Getting status for demo-api"/>
 		<ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
