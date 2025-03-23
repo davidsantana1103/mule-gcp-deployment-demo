@@ -1,0 +1,41 @@
+name: Mule CI/CD Pipeline
+
+on:
+  # Trigger on push to main and on pull requests targeting main
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+env:
+  MAVEN_CACHE_DIR: ~/.m2/repository
+  JAVA_VERSION: '17' # Updated to Java 17
+
+jobs:
+  # ✅ CI: Build and Validate PR
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin' # Eclipse Temurin is OpenJDK
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'maven'
+
+      - name: Build Mule Application with Maven
+        run: mvn clean package
+
+      - name: Upload Mule Artifact (JAR)
+        uses: actions/upload-artifact@v4
+        with:
+          name: mule-app
+          path: target/*.jar
