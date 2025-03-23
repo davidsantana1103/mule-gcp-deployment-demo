@@ -31,6 +31,21 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           cache: 'maven'
 
+      - name: Configure Maven Settings
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF
+          <settings>
+            <servers>
+              <server>
+                <id>anypoint-exchange-v3</id>
+                <username>${{ secrets.MULE_USERNAME }}</username>
+                <password>${{ secrets.MULE_PASSWORD }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+      
       - name: Build Mule Application with Maven
         run: mvn clean package
 
