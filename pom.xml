@@ -114,14 +114,6 @@
 			<url>https://repository.mulesoft.org/releases/</url>
 			<layout>default</layout>
 		</repository>
-		<repository>
-			<id>mulesoft-public</id>
-			<url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
-		</repository>
-		<repository>
-			<id>central</id>
-			<url>https://repo.maven.apache.org/maven2</url>
-		</repository>
 	</repositories>
 
 	<pluginRepositories>
