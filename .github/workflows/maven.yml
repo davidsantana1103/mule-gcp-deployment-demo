@@ -106,7 +106,7 @@ jobs:
         run: |
           find ~/.m2/repository -name "*mule-runtime-impl-no-services-bom*"
       - name: Build Mule Application with Maven
-        run: mvn clean package -Dmaven.repo.local=$MAVEN_CACHE_DIR
+        run: mvn clean package -Dmaven.repo.local=$HOME/.m2/repository
 
       - name: Upload Mule Artifact (JAR)
         uses: actions/upload-artifact@v4
