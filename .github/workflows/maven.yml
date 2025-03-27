@@ -25,6 +25,24 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # New step to prepare local .m2 repository
+      - name: Prepare Local M2 Repository
+        env:
+          # Base64 encoded .m2 repository
+          M2_REPO_BASE64: ${{ secrets.LOCAL_M2_REPOSITORY }}
+        run: |
+          # Create .m2 directory
+          mkdir -p ~/.m2/repository
+          
+          # Check if M2 repository secret is provided
+          if [ -n "$M2_REPO_BASE64" ]; then
+            echo "Restoring local M2 repository from secret"
+            echo "$M2_REPO_BASE64" | base64 --decode > m2-repository.tar.gz
+            tar -xzvf m2-repository.tar.gz -C ~/.m2/repository
+          else
+            echo "No local M2 repository found in secrets"
+          fi
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
