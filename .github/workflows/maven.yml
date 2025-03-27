@@ -74,6 +74,26 @@ jobs:
                 <password>${{ secrets.MULE_PASSWORD }}</password>
               </server>
             </servers>
+            <profiles>
+              <profile>
+                <id>mulesoft-repositories</id>
+                <repositories>
+                  <repository>
+                    <id>mulesoft-releases</id>
+                    <name>MuleSoft Releases Repository</name>
+                    <url>https://repository.mulesoft.org/releases/</url>
+                  </repository>
+                  <repository>
+                    <id>mulesoft-snapshots</id>
+                    <name>MuleSoft Snapshots Repository</name>
+                    <url>https://repository.mulesoft.org/snapshots/</url>
+                  </repository>
+                </repositories>
+              </profile>
+            </profiles>
+            <activeProfiles>
+              <activeProfile>mulesoft-repositories</activeProfile>
+            </activeProfiles>
           </settings>
           EOF
       
