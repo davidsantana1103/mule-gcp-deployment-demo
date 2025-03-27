@@ -33,15 +33,10 @@ jobs:
         run: |
           # Create .m2 directory
           mkdir -p ~/.m2/repository
+          echo "Restoring local M2 repository from secret"
+          cat m2-repository-part-* > m2-repository.tar.gz
+          tar -xzvf m2-repository.tar.gz -C ~/
           
-          # Check if M2 repository secret is provided
-          if [ -n "$M2_REPO_BASE64" ]; then
-            echo "Restoring local M2 repository from secret"
-            #echo "$M2_REPO_BASE64" | base64 --decode > m2-repository.tar.gz
-            tar -xzvf m2-repository.tar.gz -C ~/
-          else
-            echo "No local M2 repository found in secrets"
-          fi
       - name: Search for Mule Runtime Dependency
         run: |
           find ~/.m2/repository -name "*mule-runtime-impl-no-services-bom*"
