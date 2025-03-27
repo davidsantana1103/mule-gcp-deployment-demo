@@ -37,7 +37,7 @@ jobs:
           # Check if M2 repository secret is provided
           if [ -n "$M2_REPO_BASE64" ]; then
             echo "Restoring local M2 repository from secret"
-            echo "$M2_REPO_BASE64" | base64 --decode > m2-repository.tar.gz
+            #echo "$M2_REPO_BASE64" | base64 --decode > m2-repository.tar.gz
             tar -xzvf m2-repository.tar.gz -C ~/
           else
             echo "No local M2 repository found in secrets"
