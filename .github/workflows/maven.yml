@@ -42,7 +42,10 @@ jobs:
           else
             echo "No local M2 repository found in secrets"
           fi
-
+      - name: Search for Mule Runtime Dependency
+        run: |
+          find ~/.m2/repository -name "*mule-runtime-impl-no-services-bom*"
+          
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -99,7 +102,9 @@ jobs:
             </activeProfiles>
           </settings>
           EOF
-      
+      - name: Search for Mule Runtime Dependency
+        run: |
+          find ~/.m2/repository -name "*mule-runtime-impl-no-services-bom*"
       - name: Build Mule Application with Maven
         run: mvn clean package -Dmaven.repo.local=$MAVEN_CACHE_DIR
 
