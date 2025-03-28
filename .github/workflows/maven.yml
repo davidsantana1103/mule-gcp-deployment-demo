@@ -27,9 +27,6 @@ jobs:
 
       # New step to prepare local .m2 repository
       - name: Prepare Local M2 Repository
-        env:
-          # Base64 encoded .m2 repository
-          M2_REPO_BASE64: ${{ secrets.LOCAL_M2_REPOSITORY }}
         run: |
           # Create .m2 directory
           mkdir -p ~/.m2/repository
