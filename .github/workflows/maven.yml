@@ -15,6 +15,7 @@ permissions:
 env:
   MAVEN_CACHE_DIR: ~/.m2/repository
   JAVA_VERSION: '17' # Updated to Java 17
+  MAVEN_VERSION: '3.9.6' # Target Maven version
 
 jobs:
   # ✅ CI: Build and Validate PR
@@ -24,6 +25,21 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Download m2-repository.tar.gz from release
+        run: |
+          curl -L -o m2-repository.tar.gz "https://github.com/davidsantana1103/mule-gcp-deployment-demo/releases/download/1.0.0/m2-repository.tar.gz"
+      
+      # New step to prepare local .m2 repository
+      - name: Prepare Local M2 Repository
+        run: |
+          # Create .m2 directory
+          mkdir -p ~/.m2/repository
+          echo "Restoring local M2 repository from secret"
+          #cat m2-repository-part-* > m2-repository.tar.gz
+          tar -xzvf m2-repository.tar.gz -C ~/.m2/repository
+      - name: Search for Mule Runtime Dependency
+        run: |
+          find ~/.m2/repository -name "*mule-runtime-impl-no-services-bom*"
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -31,8 +47,35 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           cache: 'maven'
 
+      - name: Install Maven ${{ env.MAVEN_VERSION }}
+        run: |
+          MAVEN_URL="https://dlcdn.apache.org/maven/maven-3/${{ env.MAVEN_VERSION }}/binaries/apache-maven-${{ env.MAVEN_VERSION }}-bin.tar.gz"
+          wget $MAVEN_URL
+          tar -xvzf apache-maven-${{ env.MAVEN_VERSION }}-bin.tar.gz
+          sudo mv apache-maven-${{ env.MAVEN_VERSION }} /opt/maven
+          echo "M2_HOME=/opt/maven" >> $GITHUB_ENV
+          echo "/opt/maven/bin" >> $GITHUB_PATH
+
+      - name: Verify Maven Version
+        run: mvn -v
+        
+      - name: Configure Maven Settings
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF
+          <settings>
+            <servers>
+              <server>
+                <id>anypoint-exchange-v3</id>
+                <username>${{ secrets.MULE_USERNAME }}</username>
+                <password>${{ secrets.MULE_PASSWORD }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
       - name: Build Mule Application with Maven
-        run: mvn clean package
+        run: mvn clean package -Dmaven.repo.local=$HOME/.m2/repository -nsu
 
       - name: Upload Mule Artifact (JAR)
         uses: actions/upload-artifact@v4
