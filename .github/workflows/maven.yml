@@ -25,13 +25,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Download m2-repository.tar.gz from release
+        run: |
+          curl -L -o m2-repository.tar.gz "https://github.com/davidsantana1103/mule-gcp-deployment-demo/releases/download/1.0.0/m2-repository.tar.gz"
+      
       # New step to prepare local .m2 repository
       - name: Prepare Local M2 Repository
         run: |
           # Create .m2 directory
           mkdir -p ~/.m2/repository
           echo "Restoring local M2 repository from secret"
-          cat m2-repository-part-* > m2-repository.tar.gz
+          #cat m2-repository-part-* > m2-repository.tar.gz
           tar -xzvf m2-repository.tar.gz -C ~/.m2/repository
       - name: Search for Mule Runtime Dependency
         run: |
