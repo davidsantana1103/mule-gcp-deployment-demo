@@ -30,16 +30,16 @@ jobs:
           curl -L -o m2-repository.tar.gz "https://github.com/davidsantana1103/mule-gcp-deployment-demo/releases/download/1.0.0/m2-repository.tar.gz"
       
       # New step to prepare local .m2 repository
-      - name: Prepare Local M2 Repository
-        run: |
-          # Create .m2 directory
-          mkdir -p ~/.m2/repository
-          echo "Restoring local M2 repository from secret"
+      #- name: Prepare Local M2 Repository
+      #  run: |
+      #    # Create .m2 directory
+      #    mkdir -p ~/.m2/repository
+      #    echo "Restoring local M2 repository from secret"
           #cat m2-repository-part-* > m2-repository.tar.gz
-          tar -xzvf m2-repository.tar.gz -C ~/.m2/repository
-      - name: Search for Mule Runtime Dependency
-        run: |
-          find ~/.m2/repository -name "*mule-runtime-impl-no-services-bom*"
+      #    tar -xzvf m2-repository.tar.gz -C ~/.m2/repository
+      #- name: Search for Mule Runtime Dependency
+      #  run: |
+      #    find ~/.m2/repository -name "*mule-runtime-impl-no-services-bom*"
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -70,12 +70,26 @@ jobs:
                 <username>${{ secrets.MULE_USERNAME }}</username>
                 <password>${{ secrets.MULE_PASSWORD }}</password>
               </server>
+              <server>
+              <id>github</id>
+              <username>${{ github.repository_owner }}</username>
+              <password>${{ secrets.MULE_LIBS_TOKEN }}</password>
+            </server>
             </servers>
+            <repositories>
+              <repository>
+                <id>github-repo</id>
+                <url>https://raw.githubusercontent.com/davidsantana1103/mule-libs/feature/add-libs</url>
+                <snapshots>
+                  <enabled>true</enabled>
+                </snapshots>
+              </repository>
+            </repositories>
           </settings>
           EOF
 
       - name: Build Mule Application with Maven
-        run: mvn clean package -Dmaven.repo.local=$HOME/.m2/repository -nsu
+        run: mvn clean package #-Dmaven.repo.local=$HOME/.m2/repository -nsu
 
       - name: Upload Mule Artifact (JAR)
         uses: actions/upload-artifact@v4
