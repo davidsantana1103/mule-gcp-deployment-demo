@@ -78,7 +78,7 @@ jobs:
             </servers>
             <repositories>
               <repository>
-                <id>github-repo</id>
+                <id>github</id>
                 <url>https://raw.githubusercontent.com/davidsantana1103/mule-libs/feature/add-libs</url>
                 <snapshots>
                   <enabled>true</enabled>
