@@ -87,6 +87,11 @@ jobs:
             </repositories>
           </settings>
           EOF
+          cat ~/.m2/settings.xml
+
+      - name: cat Maven Settings
+        run: |
+          cat $HOME/.m2/settings.xml
 
       - name: Build Mule Application with Maven
         run: mvn clean package -Dmaven.repo.local=$HOME/.m2/repository -s $HOME/.m2/settings.xml

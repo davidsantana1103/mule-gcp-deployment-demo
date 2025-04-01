@@ -114,6 +114,13 @@
 			<url>https://repository.mulesoft.org/releases/</url>
 			<layout>default</layout>
 		</repository>
+		<repository>
+            <id>github</id>
+            <url>https://raw.githubusercontent.com/davidsantana1103/mule-libs/feature/add-libs</url>
+            <snapshots>
+            	<enabled>true</enabled>
+            </snapshots>
+        </repository>
 	</repositories>
 
 	<pluginRepositories>
