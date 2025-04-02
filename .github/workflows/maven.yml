@@ -1,7 +1,6 @@
 name: Mule CI/CD Pipeline
 
 on:
-  # Trigger on push to main and on pull requests targeting main
   push:
     branches:
       - main
@@ -13,37 +12,27 @@ permissions:
   contents: read
 
 env:
-  MAVEN_CACHE_DIR: ~/.m2/repository
-  JAVA_VERSION: '17' # Updated to Java 17
-  MAVEN_VERSION: '3.9.6' # Target Maven version
+  JAVA_VERSION: '17'
+  MAVEN_VERSION: '3.9.6'
 
 jobs:
-  # ✅ CI: Build and Validate PR
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout Main Repository
         uses: actions/checkout@v4
 
-      - name: Download m2-repository.tar.gz from release
-        run: |
-          curl -L -o m2-repository.tar.gz "https://github.com/davidsantana1103/mule-gcp-deployment-demo/releases/download/1.0.0/m2-repository.tar.gz"
-      
-      # New step to prepare local .m2 repository
-      - name: Prepare Local M2 Repository
-        run: |
-          # Create .m2 directory
-          mkdir -p ~/.m2/repository
-          echo "Restoring local M2 repository from secret"
-          #cat m2-repository-part-* > m2-repository.tar.gz
-          tar -xzvf m2-repository.tar.gz -C ~/.m2/repository
-      - name: Search for Mule Runtime Dependency
-        run: |
-          find ~/.m2/repository -name "*mule-runtime-impl-no-services-bom*"
+      - name: Checkout mule-libs Repository
+        uses: actions/checkout@v4
+        with:
+          repository: davidsantana1103/mule-libs
+          path: mule-libs
+          ref: feature/add-libs
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin' # Eclipse Temurin is OpenJDK
+          distribution: 'temurin'
           java-version: ${{ env.JAVA_VERSION }}
           cache: 'maven'
 
@@ -61,8 +50,8 @@ jobs:
         
       - name: Configure Maven Settings
         run: |
-          mkdir -p ~/.m2
-          cat > ~/.m2/settings.xml <<EOF
+          mkdir -p settings
+          cat > settings/settings.xml <<EOF
           <settings>
             <servers>
               <server>
@@ -71,14 +60,26 @@ jobs:
                 <password>${{ secrets.MULE_PASSWORD }}</password>
               </server>
             </servers>
+            <mirrors>
+              <mirror>
+                <id>local-maven-repo</id>
+                <mirrorOf>*</mirrorOf>
+                <url>file://$(pwd)/mule-libs/</url>
+                <layout>default</layout>
+              </mirror>
+            </mirrors>
           </settings>
           EOF
 
       - name: Build Mule Application with Maven
-        run: mvn clean package -Dmaven.repo.local=$HOME/.m2/repository -nsu
+        run: |
+          mvn clean package \
+            -Dmaven.repo.local=$(pwd)/mule-libs/\
+            -s settings/settings.xml
 
       - name: Upload Mule Artifact (JAR)
         uses: actions/upload-artifact@v4
         with:
           name: mule-app
           path: target/*.jar
+
