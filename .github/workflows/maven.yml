@@ -27,6 +27,7 @@ jobs:
         with:
           repository: davidsantana1103/mule-libs
           path: mule-libs
+          ref: feature/add-libs
 
       - name: Set up Java
         uses: actions/setup-java@v4
