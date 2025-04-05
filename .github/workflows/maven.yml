@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout Main Repository
         uses: actions/checkout@v4
+        with:
+          path: mule-app
 
       - name: Checkout mule-libs Repository
         uses: actions/checkout@v4
@@ -64,7 +66,7 @@ jobs:
               <mirror>
                 <id>local-maven-repo</id>
                 <mirrorOf>*</mirrorOf>
-                <url>file://$(pwd)/mule-libs/</url>
+                <url>file://$HOME/mule-libs/</url>
                 <layout>default</layout>
               </mirror>
             </mirrors>
@@ -73,7 +75,7 @@ jobs:
 
       - name: Build Mule Application with Maven
         run: |
-          mvn clean package \
+          mvn -f $HOME/mule-app/pom.xml clean package \
             -Dmaven.repo.local=$(pwd)/mule-libs/\
             -s settings/settings.xml
 
@@ -81,5 +83,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mule-app
-          path: target/*.jar
+          path: $HOME/mule-app/target/*.jar
 
