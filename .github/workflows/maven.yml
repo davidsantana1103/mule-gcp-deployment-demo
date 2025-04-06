@@ -67,7 +67,7 @@ jobs:
               <mirror>
                 <id>local-maven-repo</id>
                 <mirrorOf>*</mirrorOf>
-                <url>file://$HOME/mule-libs/</url>
+                <url>file://${{ github.workspace }}mule-libs/</url>
                 <layout>default</layout>
               </mirror>
             </mirrors>
@@ -76,7 +76,7 @@ jobs:
 
       - name: Build Mule Application with Maven
         run: |
-          mvn -f $HOME/mule-app/pom.xml clean package \
+          mvn -f ${{ github.workspace }}/mule-app/pom.xml clean package \
             -Dmaven.repo.local=$(pwd)/mule-libs/\
             -s settings/settings.xml
 
@@ -84,5 +84,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mule-app
-          path: $HOME/mule-app/target/*.jar
+          path: ${{ github.workspace }}/mule-app/target/*.jar
 
