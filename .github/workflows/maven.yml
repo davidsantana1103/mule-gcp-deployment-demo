@@ -63,14 +63,6 @@ jobs:
                 <password>${{ secrets.MULE_PASSWORD }}</password>
               </server>
             </servers>
-            <mirrors>
-              <mirror>
-                <id>local-maven-repo</id>
-                <mirrorOf>*</mirrorOf>
-                <url>file://${{ github.workspace }}/mule-libs/</url>
-                <layout>default</layout>
-              </mirror>
-            </mirrors>
           </settings>
           EOF
 
