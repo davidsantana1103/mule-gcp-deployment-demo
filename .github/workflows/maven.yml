@@ -29,6 +29,7 @@ jobs:
         with:
           repository: davidsantana1103/mule-libs
           path: mule-libs
+          token: ${{ secrets.MULE_LIBS_TOKEN }}
           ref: feature/add-libs
 
       - name: Set up Java
