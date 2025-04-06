@@ -77,7 +77,7 @@ jobs:
       - name: Build Mule Application with Maven
         run: |
           mvn -f ${{ github.workspace }}/mule-app/pom.xml clean package \
-            -Dmaven.repo.local=$(pwd)/mule-libs/\
+            -Dmaven.repo.local=${{ github.workspace }}/mule-libs/\
             -s settings/settings.xml
 
       - name: Upload Mule Artifact (JAR)
