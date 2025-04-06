@@ -67,7 +67,7 @@ jobs:
               <mirror>
                 <id>local-maven-repo</id>
                 <mirrorOf>*</mirrorOf>
-                <url>file://${{ github.workspace }}mule-libs/</url>
+                <url>file://${{ github.workspace }}/mule-libs/</url>
                 <layout>default</layout>
               </mirror>
             </mirrors>
